@@ -149,6 +149,11 @@ AC_DEFUN([PLATFORM_EXTRACT_VARS_FROM_OS],
       VAR_OS_API=posix
       VAR_OS_ENV=aix
       ;;
+    *haiku*)
+      VAR_OS=haiku
+      VAR_OS_API=posix
+      VAR_OS_ENV=haiku
+      ;;
     *)
       AC_MSG_ERROR([unsupported operating system $1])
       ;;
@@ -356,6 +361,8 @@ AC_DEFUN([PLATFORM_SETUP_LEGACY_VARS],
 
   if test "x$OPENJDK_TARGET_OS" = xmacosx; then
       OPENJDK_TARGET_OS_EXPORT_DIR=macosx
+  elif test "x$OPENJDK_TARGET_OS" = xhaiku; then
+      OPENJDK_TARGET_OS_EXPORT_DIR=haiku
   else
       OPENJDK_TARGET_OS_EXPORT_DIR=${OPENJDK_TARGET_OS_API_DIR}
   fi
@@ -413,6 +420,10 @@ AC_DEFUN([PLATFORM_SET_RELEASE_FILE_OS_VALUES],
   if test "x$OPENJDK_TARGET_OS" = "xmacosx"; then
     REQUIRED_OS_NAME=Darwin
     REQUIRED_OS_VERSION=11.2
+  fi
+  if test "x$OPENJDK_TARGET_OS" = "xhaiku"; then
+    REQUIRED_OS_NAME=Haiku
+    REQUIRED_OS_VERSION=1
   fi
 
   AC_SUBST(REQUIRED_OS_NAME)

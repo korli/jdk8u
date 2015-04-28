@@ -76,6 +76,15 @@ AC_DEFUN_ONCE([LIB_SETUP_INIT],
     AC_MSG_RESULT([alsa])
   fi
 
+  if test "x$OPENJDK_TARGET_OS" = xhaiku; then
+    AC_MSG_CHECKING([what is not needed on Haiku?])
+    ALSA_NOT_NEEDED=yes
+    CUPS_NOT_NEEDED=yes
+    PULSE_NOT_NEEDED=yes
+    X11_NOT_NEEDED=yes
+    AC_MSG_RESULT([alsa cups pulse x11])
+  fi
+
   if test "x$OPENJDK" = "xfalse"; then
     FREETYPE_NOT_NEEDED=yes
   fi
@@ -833,7 +842,7 @@ AC_DEFUN_ONCE([LIB_SETUP_MISC_LIBS],
   AC_MSG_CHECKING([for which zlib to use])
 
   DEFAULT_ZLIB=bundled
-  if test "x$OPENJDK_TARGET_OS" = xmacosx; then
+  if test "x$OPENJDK_TARGET_OS" = xmacosx || test "x$OPENJDK_TARGET_OS" = xhaiku; then
     #
     # On macosx default is system...on others default is
     #
