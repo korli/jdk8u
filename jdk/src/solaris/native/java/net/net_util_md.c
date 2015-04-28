@@ -35,9 +35,11 @@
 #include <dlfcn.h>
 #include <sys/time.h>
 
-#ifndef _ALLBSD_SOURCE
+#if !defined(_ALLBSD_SOURCE) && !defined(__HAIKU__)
 #include <values.h>
-#else
+#endif
+
+#ifdef _ALLBSD_SOURCE
 #include <limits.h>
 #include <sys/param.h>
 #include <sys/sysctl.h>
@@ -299,7 +301,7 @@ NET_GetFileDescriptorID(JNIEnv *env)
     return (*env)->GetFieldID(env, cls, "fd", "I");
 }
 
-#if defined(DONT_ENABLE_IPV6)
+#if defined(DONT_ENABLE_IPV6) || defined (__HAIKU__)
 jint  IPv6_supported()
 {
     return JNI_FALSE;
@@ -1665,7 +1667,7 @@ NET_Wait(JNIEnv *env, jint fd, jint flags, jint timeout)
     return timeout;
 }
 
-#if !defined(__solaris__)
+#if !defined(__solaris__) && !defined(__HAIKU__)
 long NET_GetCurrentTime() {
     struct timeval time;
     gettimeofday(&time, NULL);
