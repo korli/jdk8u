@@ -199,7 +199,7 @@ void os::Posix::print_rlimit_info(outputStream* st) {
   else st->print("%uk", rlim.rlim_cur >> 10);
 
   // Isn't there on solaris
-#if !defined(TARGET_OS_FAMILY_solaris) && !defined(TARGET_OS_FAMILY_aix)
+#if !defined(TARGET_OS_FAMILY_solaris) && !defined(TARGET_OS_FAMILY_aix) && !defined(TARGET_OS_FAMILY_haiku)
   st->print(", NPROC ");
   getrlimit(RLIMIT_NPROC, &rlim);
   if (rlim.rlim_cur == RLIM_INFINITY) st->print("infinity");

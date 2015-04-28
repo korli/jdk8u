@@ -43,6 +43,9 @@
 #ifdef TARGET_OS_FAMILY_bsd
 # include "os_bsd.inline.hpp"
 #endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "os_haiku.inline.hpp"
+#endif
 elapsedTimer CMSAdaptiveSizePolicy::_concurrent_timer;
 elapsedTimer CMSAdaptiveSizePolicy::_STW_timer;
 

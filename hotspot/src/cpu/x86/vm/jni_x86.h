@@ -26,7 +26,7 @@
 #ifndef _JAVASOFT_JNI_MD_H_
 #define _JAVASOFT_JNI_MD_H_
 
-#if defined(SOLARIS) || defined(LINUX) || defined(_ALLBSD_SOURCE)
+#if defined(SOLARIS) || defined(LINUX) || defined(_ALLBSD_SOURCE) || defined(HAIKU)
 
 
 // Note: please do not change these without also changing jni_md.h in the JDK

@@ -51,6 +51,9 @@
 #ifdef TARGET_OS_FAMILY_bsd
 # include "os_bsd.inline.hpp"
 #endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "os_haiku.inline.hpp"
+#endif
 
 void* StackObj::operator new(size_t size)     throw() { ShouldNotCallThis(); return 0; }
 void  StackObj::operator delete(void* p)              { ShouldNotCallThis(); }

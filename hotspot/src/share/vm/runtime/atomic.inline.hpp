@@ -73,4 +73,9 @@
 # include "atomic_bsd_zero.inline.hpp"
 #endif
 
+// Haiku
+#ifdef TARGET_OS_ARCH_haiku_x86
+# include "atomic_haiku_x86.inline.hpp"
+#endif
+
 #endif // SHARE_VM_RUNTIME_ATOMIC_INLINE_HPP

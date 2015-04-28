@@ -41,6 +41,9 @@
 #ifdef TARGET_OS_FAMILY_bsd
 # include "jvm_bsd.h"
 #endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "jvm_haiku.h"
+#endif
 
 #ifndef _JAVASOFT_JVM_H_
 #define _JAVASOFT_JVM_H_

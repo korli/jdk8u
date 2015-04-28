@@ -90,6 +90,9 @@
 #ifdef TARGET_OS_FAMILY_bsd
 # include "jvm_bsd.h"
 #endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "jvm_haiku.h"
+#endif
 
 #if INCLUDE_ALL_GCS
 #include "gc_implementation/g1/g1SATBCardTableModRefBS.hpp"

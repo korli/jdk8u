@@ -1,0 +1,15 @@
+os_family = haiku
+
+arch = ia64
+
+os_arch = haiku_ia64
+
+lib_arch = ia64
+
+compiler = gcc
+
+gnu_dis_arch = ia64
+
+sysdefs = -DHAIKU -D_GNU_SOURCE -DIA64 -DCC_INTERP
+
+mark_style = alignment

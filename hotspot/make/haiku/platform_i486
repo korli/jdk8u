@@ -1,0 +1,15 @@
+os_family = haiku
+
+arch = x86
+
+arch_model = x86_32
+
+os_arch = haiku_x86
+
+os_arch_model = haiku_x86_32
+
+lib_arch = i386
+
+compiler = gcc
+
+sysdefs = -DHAIKU -D_GNU_SOURCE -DIA32

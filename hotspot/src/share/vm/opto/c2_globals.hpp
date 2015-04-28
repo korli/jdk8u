@@ -56,6 +56,9 @@
 #ifdef TARGET_OS_FAMILY_bsd
 # include "c2_globals_bsd.hpp"
 #endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "c2_globals_haiku.hpp"
+#endif
 
 //
 // Defines all globals flags used by the server compiler.

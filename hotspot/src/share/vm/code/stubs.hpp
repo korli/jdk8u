@@ -42,6 +42,9 @@
 #ifdef TARGET_OS_FAMILY_bsd
 # include "os_bsd.inline.hpp"
 #endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "os_haiku.inline.hpp"
+#endif
 
 // The classes in this file provide a simple framework for the
 // management of little pieces of machine code - or stubs -

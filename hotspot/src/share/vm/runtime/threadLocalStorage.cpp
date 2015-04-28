@@ -37,6 +37,9 @@
 #ifdef TARGET_OS_FAMILY_bsd
 # include "os_bsd.inline.hpp"
 #endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "os_haiku.inline.hpp"
+#endif
 
 // Solaris no longer has this kind of ThreadLocalStorage implementation.
 // This will be removed from all platforms in the near future.

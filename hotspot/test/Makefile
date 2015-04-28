@@ -84,6 +84,14 @@ ifeq ($(findstring BSD,$(UNAME_S)), BSD)
     ARCH = i586
   endif
 endif
+ifeq ($(UNAME_S), Haiku)
+  PLATFORM = haiku
+  SLASH_JAVA = /java
+  ARCH = $(shell uname -m)
+  ifeq ($(ARCH), BePC)
+    ARCH = i586
+  endif
+endif
 ifeq ($(PLATFORM),)
   # detect whether we're running in MKS or cygwin
   ifeq ($(UNAME_S), Windows_NT) # MKS

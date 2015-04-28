@@ -43,6 +43,9 @@
 #ifdef TARGET_OS_FAMILY_bsd
 # include "os_bsd.inline.hpp"
 #endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "os_haiku.inline.hpp"
+#endif
 
 // This class provides a framework for collecting various statistics.
 // The current implementation is oriented towards counting invocations

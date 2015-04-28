@@ -1,0 +1,17 @@
+os_family = haiku
+
+arch = zero
+
+arch_model = zero
+
+os_arch = haiku_zero
+
+os_arch_model = haiku_zero
+
+lib_arch = zero
+
+compiler = gcc
+
+gnu_dis_arch = zero
+
+sysdefs = -DHAIKU -D_GNU_SOURCE -DCC_INTERP -DZERO -D@ZERO_ARCHDEF@ -DZERO_LIBARCH=\"@ZERO_LIBARCH@\"

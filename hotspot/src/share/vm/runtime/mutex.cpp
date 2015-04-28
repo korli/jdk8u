@@ -41,6 +41,9 @@
 #ifdef TARGET_OS_FAMILY_bsd
 # include "mutex_bsd.inline.hpp"
 #endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "mutex_haiku.inline.hpp"
+#endif
 
 PRAGMA_FORMAT_MUTE_WARNINGS_FOR_GCC
 

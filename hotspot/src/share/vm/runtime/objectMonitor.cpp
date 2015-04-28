@@ -57,6 +57,9 @@
 #if INCLUDE_JFR
 #include "jfr/support/jfrFlush.hpp"
 #endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "os_haiku.inline.hpp"
+#endif
 
 #if defined(__GNUC__) && !defined(IA64) && !defined(PPC64)
   // Need to inhibit inlining for older versions of GCC to avoid build-time failures

@@ -111,6 +111,9 @@ class OSThread: public CHeapObj<mtThread> {
 #ifdef TARGET_OS_FAMILY_bsd
 # include "osThread_bsd.hpp"
 #endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "osThread_haiku.hpp"
+#endif
 
  public:
   static ByteSize thread_id_offset()              { return byte_offset_of(OSThread, _thread_id); }

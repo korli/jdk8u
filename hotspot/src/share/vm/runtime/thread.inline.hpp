@@ -43,6 +43,9 @@
 #ifdef TARGET_OS_FAMILY_bsd
 # include "thread_bsd.inline.hpp"
 #endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "thread_haiku.inline.hpp"
+#endif
 
 #undef SHARE_VM_RUNTIME_THREAD_INLINE_HPP_SCOPE
 

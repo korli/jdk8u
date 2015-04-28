@@ -74,4 +74,9 @@
 # include "orderAccess_bsd_zero.inline.hpp"
 #endif
 
+// Haiku
+#ifdef TARGET_OS_ARCH_haiku_x86
+# include "orderAccess_haiku_x86.inline.hpp"
+#endif
+
 #endif // SHARE_VM_RUNTIME_ORDERACCESS_INLINE_HPP

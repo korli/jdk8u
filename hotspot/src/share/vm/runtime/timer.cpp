@@ -41,6 +41,9 @@
 #ifdef TARGET_OS_FAMILY_bsd
 # include "os_bsd.inline.hpp"
 #endif
+#ifdef TARGET_OS_FAMILY_bsd
+# include "os_haiku.inline.hpp"
+#endif
 
 double TimeHelper::counter_to_seconds(jlong counter) {
   double count = (double) counter;

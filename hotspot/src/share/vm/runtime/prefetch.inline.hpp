@@ -73,4 +73,9 @@
 # include "prefetch_bsd_zero.inline.hpp"
 #endif
 
+// Haiku
+#ifdef TARGET_OS_ARCH_haiku_x86
+# include "prefetch_haiku_x86.inline.hpp"
+#endif
+
 #endif // SHARE_VM_RUNTIME_PREFETCH_INLINE_HPP

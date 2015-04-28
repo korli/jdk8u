@@ -113,6 +113,9 @@ class InterfaceSupport: AllStatic {
 #ifdef TARGET_OS_FAMILY_bsd
 # include "interfaceSupport_bsd.hpp"
 #endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "interfaceSupport_haiku.hpp"
+#endif
 
 };
 

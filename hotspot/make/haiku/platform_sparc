@@ -1,0 +1,15 @@
+os_family = haiku
+
+arch = sparc
+
+arch_model = sparc
+
+os_arch = haiku_sparc
+
+os_arch_model = haiku_sparc
+
+lib_arch = sparc
+
+compiler = gcc
+
+sysdefs = -DHAIKU -D_GNU_SOURCE -DSPARC

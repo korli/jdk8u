@@ -70,6 +70,9 @@
 #ifdef TARGET_OS_FAMILY_bsd
 # include "globals_bsd.hpp"
 #endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "globals_haiku.hpp"
+#endif
 #ifdef TARGET_OS_ARCH_linux_x86
 # include "globals_linux_x86.hpp"
 #endif
@@ -106,6 +109,9 @@
 #ifdef TARGET_OS_ARCH_bsd_zero
 # include "globals_bsd_zero.hpp"
 #endif
+#ifdef TARGET_OS_ARCH_haiku_x86
+# include "globals_haiku_x86.hpp"
+#endif
 #ifdef COMPILER1
 #ifdef TARGET_ARCH_x86
 # include "c1_globals_x86.hpp"
@@ -136,6 +142,9 @@
 #endif
 #ifdef TARGET_OS_FAMILY_bsd
 # include "c1_globals_bsd.hpp"
+#endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "c1_globals_haiku.hpp"
 #endif
 #endif
 #ifdef COMPILER2
@@ -168,6 +177,9 @@
 #endif
 #ifdef TARGET_OS_FAMILY_bsd
 # include "c2_globals_bsd.hpp"
+#endif
+#ifdef TARGET_OS_FAMILY_haiku
+# include "c2_globals_haiku.hpp"
 #endif
 #endif
 #ifdef SHARK

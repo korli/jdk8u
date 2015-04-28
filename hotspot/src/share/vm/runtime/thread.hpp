@@ -1744,6 +1744,9 @@ public:
 #ifdef TARGET_OS_ARCH_bsd_zero
 # include "thread_bsd_zero.hpp"
 #endif
+#ifdef TARGET_OS_ARCH_haiku_x86
+# include "thread_haiku_x86.hpp"
+#endif
 
 
  public:
