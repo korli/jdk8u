@@ -164,7 +164,6 @@ define SetupLauncher
           -DPROGNAME='"$1"' $(DPACKAGEPATH) \
           $2, \
       CFLAGS_solaris := -KPIC, \
-      CFLAGS_haiku := -fPIC, \
       LDFLAGS := $(LDFLAGS_JDKEXE) \
           $(ORIGIN_ARG) \
           $$($1_LDFLAGS), \

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -65,19 +65,9 @@ class HaikuAttachListener: AllStatic {
   static bool _has_path;
 
   // the file descriptor for the listening socket
-  static int _listener;
+  static volatile int _listener;
 
-  static void set_path(char* path) {
-    if (path == NULL) {
-      _has_path = false;
-    } else {
-      strncpy(_path, path, UNIX_PATH_MAX);
-      _path[UNIX_PATH_MAX-1] = '\0';
-      _has_path = true;
-    }
-  }
-
-  static void set_listener(int s)               { _listener = s; }
+  static bool _atexit_registered;
 
   // reads a request from the given connected socket
   static HaikuAttachOperation* read_request(int s);
@@ -89,6 +79,19 @@ class HaikuAttachListener: AllStatic {
   enum {
     ATTACH_ERROR_BADVERSION     = 101           // error codes
   };
+
+  static void set_path(char* path) {
+    if (path == NULL) {
+      _path[0] = '\0';
+      _has_path = false;
+    } else {
+      strncpy(_path, path, UNIX_PATH_MAX);
+      _path[UNIX_PATH_MAX-1] = '\0';
+      _has_path = true;
+    }
+  }
+
+  static void set_listener(int s)               { _listener = s; }
 
   // initialize the listener, returns 0 if okay
   static int init();
@@ -122,7 +125,8 @@ class HaikuAttachOperation: public AttachOperation {
 // statics
 char HaikuAttachListener::_path[UNIX_PATH_MAX];
 bool HaikuAttachListener::_has_path;
-int HaikuAttachListener::_listener = -1;
+volatile int HaikuAttachListener::_listener = -1;
+bool HaikuAttachListener::_atexit_registered = false;
 
 // Supporting class to help split a buffer into individual components
 class ArgumentIterator : public StackObj {
@@ -153,16 +157,15 @@ class ArgumentIterator : public StackObj {
 // bound too.
 extern "C" {
   static void listener_cleanup() {
-    static int cleanup_done;
-    if (!cleanup_done) {
-      cleanup_done = 1;
-      int s = HaikuAttachListener::listener();
-      if (s != -1) {
-        ::close(s);
-      }
-      if (HaikuAttachListener::has_path()) {
-        ::unlink(HaikuAttachListener::path());
-      }
+    int s = HaikuAttachListener::listener();
+    if (s != -1) {
+      HaikuAttachListener::set_listener(-1);
+      ::shutdown(s, SHUT_RDWR);
+      ::close(s);
+    }
+    if (HaikuAttachListener::has_path()) {
+      ::unlink(HaikuAttachListener::path());
+      HaikuAttachListener::set_path(NULL);
     }
   }
 }
@@ -175,7 +178,10 @@ int HaikuAttachListener::init() {
   int listener;                      // listener socket (file descriptor)
 
   // register function to cleanup
-  ::atexit(listener_cleanup);
+  if (!_atexit_registered) {
+    _atexit_registered = true;
+    ::atexit(listener_cleanup);
+  }
 
   int n = snprintf(path, UNIX_PATH_MAX, "%s/.java_pid%d",
                    os::get_temp_directory(), os::current_process_id());
@@ -340,24 +346,21 @@ HaikuAttachOperation* HaikuAttachListener::dequeue() {
     struct ucred cred_info;
     socklen_t optlen = sizeof(cred_info);
     if (::getsockopt(s, SOL_SOCKET, SO_PEERCRED, (void*)&cred_info, &optlen) == -1) {
-      int res;
-      RESTARTABLE(::close(s), res);
+      ::close(s);
       continue;
     }
     uid_t euid = geteuid();
     gid_t egid = getegid();
 
     if (cred_info.uid != euid || cred_info.gid != egid) {
-      int res;
-      RESTARTABLE(::close(s), res);
+      ::close(s);
       continue;
     }
 
     // peer credential look okay so we read the request
     HaikuAttachOperation* op = read_request(s);
     if (op == NULL) {
-      int res;
-      RESTARTABLE(::close(s), res);
+      ::close(s);
       continue;
     } else {
       return op;
@@ -408,7 +411,7 @@ void HaikuAttachOperation::complete(jint result, bufferedStream* st) {
   }
 
   // done
-  RESTARTABLE(::close(this->socket()), rc);
+  ::close(this->socket());
 
   // were we externally suspended while we were waiting?
   thread->check_and_wait_while_suspended();
@@ -475,6 +478,30 @@ int AttachListener::pd_init() {
   return ret_code;
 }
 
+bool AttachListener::check_socket_file() {
+  int ret;
+  struct stat st;
+  ret = stat(HaikuAttachListener::path(), &st);
+  if (ret == -1) { // need to restart attach listener.
+    debug_only(warning("Socket file %s does not exist - Restart Attach Listener",
+                      HaikuAttachListener::path()));
+
+    listener_cleanup();
+
+    // wait to terminate current attach listener instance...
+    {
+      // avoid deadlock if AttachListener thread is blocked at safepoint
+      ThreadBlockInVM tbivm(JavaThread::current());
+      while (AttachListener::transit_state(AL_INITIALIZING,
+                                           AL_NOT_INITIALIZED) != AL_NOT_INITIALIZED) {
+        os::yield();
+      }
+    }
+    return is_init_trigger();
+  }
+  return false;
+}
+
 // Attach Listener is started lazily except in the case when
 // +ReduseSignalUsage is used
 bool AttachListener::init_at_startup() {
@@ -491,13 +518,16 @@ bool AttachListener::is_init_trigger() {
   if (init_at_startup() || is_initialized()) {
     return false;               // initialized at startup or already initialized
   }
-  char path[PATH_MAX+1];
-  snprintf(path, sizeof(path), "%s/.attach_pid%d",
-           os::get_temp_directory(), os::current_process_id());
+  char fn[PATH_MAX+1];
+  sprintf(fn, ".attach_pid%d", os::current_process_id());
   int ret;
   struct stat st;
-  RESTARTABLE(::stat(path, &st), ret);
-
+  RESTARTABLE(::stat(fn, &st), ret);
+  if (ret == -1) {
+    snprintf(fn, sizeof(fn), "%s/.attach_pid%d",
+             os::get_temp_directory(), os::current_process_id());
+    RESTARTABLE(::stat(fn, &st), ret);
+  }
   if (ret == 0) {
     // simple check to avoid starting the attach mechanism when
     // a bogus user creates the file

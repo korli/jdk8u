@@ -1156,6 +1156,11 @@ void os::print_dll_info(outputStream *st) {
   }
 }
 
+int os::get_loaded_modules_info(os::LoadedModulesCallbackFunc callback, void *param) {
+  // Not yet implemented.
+  return 0;
+}
+
 void os::print_os_info_brief(outputStream* st) {
   os::Posix::print_uname_info(st);
 
@@ -1197,8 +1202,8 @@ void os::print_siginfo(outputStream* st, void* siginfo) {
       UseSharedSpaces) {
     FileMapInfo* mapinfo = FileMapInfo::current_info();
     if (mapinfo->is_in_shared_space(si->si_addr)) {
-      st->print("\n\nError accessing class data sharing archive."
-                " Mapped file inaccessible during execution, "
+      st->print("\n\nError accessing class data sharing archive."   \
+                " Mapped file inaccessible during execution, "      \
                 " possible disk/network problem.");
     }
   }
@@ -1298,7 +1303,7 @@ void os::jvm_path(char *buf, jint buflen) {
         if (0 == access(buf, F_OK)) {
           // Use current module name "libjvm.so"
           len = strlen(buf);
-          snprintf(buf + len, buflen-len, "/hotspot/libjvm.so", p);
+          snprintf(buf + len, buflen-len, "/hotspot/libjvm.so");
         } else {
           // Go back to path of .so
           rp = realpath(dli_fname, buf);
@@ -1715,6 +1720,10 @@ char* os::pd_attempt_reserve_memory_at(size_t bytes, char* requested_addr) {
 
 size_t os::read(int fd, void *buf, unsigned int nBytes) {
   return ::read(fd, buf, nBytes);
+}
+
+size_t os::read_at(int fd, void *buf, unsigned int nBytes, jlong offset) {
+  return ::pread(fd, buf, nBytes, offset);
 }
 
 // TODO-FIXME: reconcile Solaris' os::sleep with the linux variation.

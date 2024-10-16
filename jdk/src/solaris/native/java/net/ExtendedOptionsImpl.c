@@ -25,7 +25,7 @@
 
 #include <jni.h>
 #include <string.h>
-#if defined(__linux__) || defined(MACOSX)
+#if defined(__linux__) || defined(MACOSX) || defined(__HAIKU__)
 #include <netinet/tcp.h>
 #include <netinet/in.h>
 #endif

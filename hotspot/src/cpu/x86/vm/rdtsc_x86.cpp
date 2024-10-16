@@ -31,6 +31,9 @@
 #ifdef TARGET_OS_ARCH_bsd_x86
 # include "os_bsd_x86.inline.hpp"
 #endif
+#ifdef TARGET_OS_ARCH_haiku_x86
+# include "os_haiku_x86.inline.hpp"
+#endif
 #ifdef TARGET_OS_ARCH_windows_x86
 # include "os_windows_x86.inline.hpp"
 #endif

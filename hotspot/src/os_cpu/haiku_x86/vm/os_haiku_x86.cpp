@@ -220,7 +220,7 @@ JVM_handle_haiku_signal(int sig,
 
   // Must do this before SignalHandlerMark, if crash protection installed we will longjmp away
   // (no destructors can be run)
-  os::WatcherThreadCrashProtection::check_crash_protection(sig, t);
+  os::ThreadCrashProtection::check_crash_protection(sig, t);
 
   SignalHandlerMark shm(t);
 
@@ -533,6 +533,7 @@ JVM_handle_haiku_signal(int sig,
   err.report_and_die();
 
   ShouldNotReachHere();
+  return false;
 }
 
 void os::Haiku::init_thread_fpu_state(void) {

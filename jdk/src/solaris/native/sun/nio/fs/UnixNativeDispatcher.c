@@ -696,7 +696,11 @@ Java_sun_nio_fs_UnixNativeDispatcher_readdir(JNIEnv* env, jclass this, jlong val
     struct dirent64* result;
     struct {
         struct dirent64 buf;
+#ifndef __HAIKU__
         char name_extra[PATH_MAX + 1 - sizeof result->d_name];
+#else
+        char name_extra[PATH_MAX + 1];
+#endif
     } entry;
     struct dirent64* ptr = &entry.buf;
     int res;
